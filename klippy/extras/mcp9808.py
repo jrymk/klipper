@@ -15,8 +15,8 @@ MCP9808_REGS = {
     'TUPPER': 0x02,
     'TLOWER': 0x03,
     'TCRIT': 0x04,
-    'TAMBIENT': 0x06,
-    'MANUFACTURERID': 0x07,
+    'TAMBIENT': 0x05,
+    'MANUFACTURERID': 0x06,
     'DEVICEID': 0x07,
     'RES': 0x08,
 }
