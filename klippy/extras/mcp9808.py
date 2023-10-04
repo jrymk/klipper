@@ -32,16 +32,16 @@ class MCP9808:
         self.i2c = bus.MCU_I2C_from_config(config, MCP9808_CHIP_ADDR,
                                            MCP9808_I2C_SPEED)
         self.mcu = self.i2c.get_mcu()
-        self.report_time = config.getfloat('MCP9808_report_time', MCP9808_REPORT_TIME,
+        self.report_time = config.getfloat('mcp9808_report_time', MCP9808_REPORT_TIME,
                                            minval=MCP9808_MIN_REPORT_TIME)
         self.temp = self.min_temp = self.max_temp = 0.0
-        self.sample_timer = self.reactor.register_timer(self._sample_MCP9808)
-        self.printer.add_object("MCP9808 " + self.name, self)
+        self.sample_timer = self.reactor.register_timer(self._sample_mcp9808)
+        self.printer.add_object("mcp9808 " + self.name, self)
         self.printer.register_event_handler("klippy:connect",
                                             self.handle_connect)
 
     def handle_connect(self):
-        self._init_MCP9808()
+        self._init_mcp9808()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
@@ -60,24 +60,24 @@ class MCP9808:
             deg = deg - (1 << 13)
         return deg / 16
 
-    def _init_MCP9808(self):
+    def _init_mcp9808(self):
         # Check and report the chip ID but ignore errors since many
         # chips don't have it
         try:
             manufacturerid = self.read_register('MANUFACTURERID', 1)[1]
             deviceid = self.read_register('DEVICEID', 1)[0]
-            logging.info("MCP9808: Manufacturer ID %#x, Device ID %#x" %
+            logging.info("mcp9808: Manufacturer ID %#x, Device ID %#x" %
                          (manufacturerid, deviceid))
             self.write_register('RES', 3)  # set resolution to 0.0625 degrees
         except:
             pass
 
-    def _sample_MCP9808(self, eventtime):
+    def _sample_mcp9808(self, eventtime):
         try:
             sample = self.read_register('TAMBIENT', 2)
             self.temp = self.degrees_from_sample(sample)
         except Exception:
-            logging.exception("MCP9808: Error reading data")
+            logging.exception("mcp9808: Error reading data")
             self.temp = 0.0
             return self.reactor.NEVER
 
